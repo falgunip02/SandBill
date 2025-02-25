@@ -1,8 +1,15 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
     name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    surname: {
         type: String,
         required: true,
         trim: true,
@@ -13,12 +20,17 @@ const userSchema = new Schema({
         trim: true,
         unique: true
     },
-    phone: {
+    password: {
         type: String,
         required: true,
         trim: true,
     },
     address: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    phone: {
         type: String,
         required: true,
         trim: true,
@@ -31,6 +43,21 @@ const userSchema = new Schema({
     timestamps: true
 });
 
-const User =  mongoose.model("users", userSchema);
+// Hash the password before saving the user
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+// Method to check if the password is correct
+userSchema.methods.isPasswordCorrect = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = model("User", userSchema);
 
 export default User;
