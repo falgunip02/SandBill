@@ -1,4 +1,4 @@
-import mongoose, { Schema as _Schema, model } from "mongoose";
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const clientSchema = new Schema({
@@ -20,7 +20,7 @@ const clientSchema = new Schema({
     },
     clientAssigned: [{
         userId: {
-            type: _Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "users", // Reference to the 'users' collection
             required: true,
         },
@@ -29,4 +29,6 @@ const clientSchema = new Schema({
     timestamps: true,
 });
 
-export default model("Client", clientSchema);
+const client = mongoose.model("Client", clientSchema);
+
+module.exports = client;
