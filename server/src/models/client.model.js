@@ -2,33 +2,72 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const clientSchema = new Schema({
-    clientName: {
+    jobNumber: {
         type: String,
         required: true,
+        unique: true
+    },
+    estimateDate: {
+        type: Date,
+        required: true
+    },
+    clientName: {
+        type: String,
+        required: [true, "Client name is required"],
+        trim: true
+    },
+    narration: {
+        type: String
+    },
+    estimateAmount: {
+        type: Number,
+        required: true
+    },
+    poStatus: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
+    },
+    status: {
+        type: String,
+        enum: ['Open', 'Closed'],
+        default: 'Open'
+    },
+    taxInvoiceDate: {
+        type: Date
+    },
+    billedAmount: {
+        type: Number,
+        default: 0
+    },
+    balanceBillingAmount: {
+        type: Number,
+        default: 0
+    },
+    billingDate: {
+        type: Date
     },
     clientLocation: {
         type: String,
-        required: true,
+        default: ""
     },
     clientWebsite: {
         type: String,
-        required: true,
+        default: ""
     },
     clientPhoto: {
         type: String,
-        required: true,
+        required: [true, "Client logo is required"]
     },
     clientAssigned: [{
         userId: {
             type: Schema.Types.ObjectId,
-            ref: "users", // Reference to the 'users' collection
-            required: true,
-        },
-    }],
+            ref: "User", // Reference to the User model
+            required: true
+        }
+    }]
 }, {
-    timestamps: true,
+    timestamps: true
 });
 
-const client = mongoose.model("Client", clientSchema);
-
-module.exports = client;
+export default mongoose.model("Client", clientSchema);

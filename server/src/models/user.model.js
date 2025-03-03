@@ -53,11 +53,6 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-// Method to check if the password is correct
-userSchema.methods.isPasswordCorrect = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
-};
-
 const User = model("User", userSchema);
 
 export default User;

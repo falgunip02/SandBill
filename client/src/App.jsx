@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import OverView from './pages/overview/OverView';
-import LoginPage from './pages/Login/Login';
+import LoginPage from './pages/login/Login';
+import CreateClients from './pages/CreateClients/CreateClients';
 import { useState } from 'react';
 
 // import Dashboard from './pages/Dashboard';
@@ -24,9 +25,13 @@ function App() {
           <div>Loading...</div>
         ) : (
           <Routes>
+            <Route path="/overview/:id/*" element={ <OverView />} />
+
+
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<OverView />} />
+            <Route path="/" element={<LoginPage />} />
             <Route path='/dashboard' element={<OverView />} />
+            <Route path="/createClients" element={<CreateClients />} />
             {/* <Route path="/clients" element={<Clients />} />
             <Route path="/bills" element={<Bills />} />
             <Route path="/login" element={<Login />} />

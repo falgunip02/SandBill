@@ -2,19 +2,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs';
 
-// Function to generate access and refresh tokens
-const generateAccessAndRefreshTokens = async (email) => {
-  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
-    throw new Error("JWT secrets are not defined in the environment variables");
-  }
-
-  console.log("Generating tokens for email:", email);
-  const accessToken = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-  return { accessToken, refreshToken };
-};
 
 // Controller: Create New User
 const createNewUser = asyncHandler(async (req, res) => {
@@ -27,6 +16,7 @@ const createNewUser = asyncHandler(async (req, res) => {
     );
   }
 
+
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, "User with this email already exists");
@@ -38,47 +28,75 @@ const createNewUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, newUser, "User Created Successfully"));
 });
 
-// Controller: Login User
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
 
-  if (!email || !password) {
-    throw new ApiError(400, "Email and password are required");
+// Get All Users for Dropdown
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find()
+    .select('name email')
+    .sort({ name: 1 });
+
+  if (!users?.length) {
+    throw new ApiError(404, "No users found");
   }
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  const isPasswordValid = await user.isPasswordCorrect(password);
-  if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid credentials");
-  }
-
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.email);
-
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
-
-  console.log("Secure ? :", process.env.NODE_ENV !== "development");
-
-  const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
-  };
-
-  res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(
-        200,
-        { user: loggedInUser, accessToken, refreshToken },
-        "User logged in successfully"
-      )
-    );
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      users.map(user => ({
+        value: user._id,
+        label: `${user.name} (${user.email})`
+      })),
+      "Users fetched successfully"
+    )
+  );
 });
 
-export { createNewUser, loginUser };
+
+
+
+
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid password" });
+        }
+
+        // Send response
+        res.json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            message: "Logged in successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Logout controller
+const logout = async (req, res) => {
+    try {
+        res.json({ message: "Logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export {
+  createNewUser,
+  login,
+
+  getAllUsers,
+  logout
+};

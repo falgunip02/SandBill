@@ -23,9 +23,23 @@ const Login = () => {
     setError('');
 
     try {
-      // Here you'll add your login API call
-      // For now, let's just navigate to dashboard on submit
-      navigate('/');
+      const response = await fetch('http://localhost:5000/api/v1/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200 && data.success) {
+        console.log(data);
+        navigate(`/overview/${data.data.user._id}`);
+      } else {
+        setError('Invalid email or password');
+      }
     } catch (err) {
       setError('Invalid email or password');
     }
