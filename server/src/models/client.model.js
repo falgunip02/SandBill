@@ -55,10 +55,10 @@ const clientSchema = new Schema({
         type: String,
         default: ""
     },
-    clientPhoto: {
-        type: String,
-        required: [true, "Client logo is required"]
-    },
+    // clientPhoto: {
+    //     type: String,
+    //     required: [true, "Client logo is required"]
+    // },
     clientAssigned: [{
         userId: {
             type: Schema.Types.ObjectId,

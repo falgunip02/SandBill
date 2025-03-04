@@ -9,7 +9,7 @@ const router = express.Router();
  * @desc    Create a new client
  * @access  Public
  */
-router.post('/', upload.single('clientPhoto'), createClient);
+router.post('/createClient', createClient);
 
 /**
  * @route   GET /api/v1/clients

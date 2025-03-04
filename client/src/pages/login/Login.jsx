@@ -32,6 +32,9 @@ const Login = () => {
         credentials: 'include'
       });
 
+      console.log(response);
+      
+
       const data = await response.json();
 
       if (response.status === 200 && data.success) {
