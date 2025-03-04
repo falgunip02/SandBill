@@ -1,5 +1,13 @@
 import express from 'express';
-import { createClient, getAllClients, getClientById, updateClient, deleteClient } from '../controllers/client.controller.js';
+import {
+  createClient,
+  getAllClients,
+  getClientById,
+  updateClient,
+  deleteClient,
+  searchClients,
+  getClientStats
+} from '../controllers/client.controller.js';
 import { upload } from '../middlewares/multer.middleware.js';
 
 const router = express.Router();
@@ -39,6 +47,18 @@ router.put('/:id', upload.single('clientPhoto'), updateClient);
  */
 router.delete('/:id', deleteClient);
 
+/**
+ * @route   GET /api/v1/clients/search
+ * @desc    Search clients
+ * @access  Public
+ */
+router.get('/search', searchClients);
 
+/**
+ * @route   GET /api/v1/clients/stats
+ * @desc    Get client statistics
+ * @access  Public
+ */
+router.get('/stats', getClientStats);
 
 export default router; 

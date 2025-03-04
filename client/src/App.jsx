@@ -3,6 +3,9 @@ import './App.css';
 import OverView from './pages/overview/OverView';
 import LoginPage from './pages/login/Login';
 import CreateClients from './pages/CreateClients/CreateClients';
+import ViewClients from './pages/ViewClients/ViewClients';
+import ClientDetails from './pages/ViewClients/ClientDetails';
+
 import { useState } from 'react';
 
 // import Dashboard from './pages/Dashboard';
@@ -32,6 +35,10 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path='/dashboard' element={<OverView />} />
             <Route path="/createClients" element={<CreateClients />} />
+            <Route path="/viewClients" element={<ViewClients />} />
+            <Route path="/viewClients/:id" element={<ClientDetails />} />
+            <Route path="/clients/create" element={<CreateClients />} />
+          
             {/* <Route path="/clients" element={<Clients />} />
             <Route path="/bills" element={<Bills />} />
             <Route path="/login" element={<Login />} />

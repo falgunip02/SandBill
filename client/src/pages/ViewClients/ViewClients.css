@@ -1,0 +1,66 @@
+.view-clients {
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* Add this for the left side of header with home icon */
+.header .MuiIconButton-root {
+  padding: 8px;
+}
+
+.header .MuiIconButton-root:hover {
+  background-color: rgba(25, 118, 210, 0.04);
+}
+
+.table-container {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #d32f2f;
+  font-size: 18px;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  font-weight: 600;
+  background-color: #f5f5f5;
+}
+
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #f8f9fa;
+}
+
+.MuiTableCell-root a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.MuiTableCell-root a:hover {
+  text-decoration: underline;
+} 

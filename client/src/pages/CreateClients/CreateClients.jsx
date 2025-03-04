@@ -79,7 +79,7 @@ const CreateClients = () => {
       if (!response.ok) throw new Error(data.message || "Something went wrong");
   
       console.log("Client registered:", data);
-      navigate('/clients'); // Navigate to clients list or another page after successful registration
+      navigate('/ViewClients'); // Navigate to clients list or another page after successful registration
     } catch (error) {
       console.error("Error:", error);
       setErrors(prev => ({ ...prev, submit: error.message }));
