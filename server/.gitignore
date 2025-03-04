@@ -1,20 +1,2 @@
-# Environment variables
+node_modules
 .env
-.env.local
-.env.*.local
-
-# Dependencies
-node_modules/
-
-# Logs
-logs
-*.log
-npm-debug.log*
-
-# Upload directory
-public/uploads/*
-!public/uploads/.gitkeep
-
-# IDE files
-.vscode/
-.idea/
