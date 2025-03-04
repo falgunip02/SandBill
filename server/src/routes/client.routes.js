@@ -9,7 +9,7 @@ const router = express.Router();
  * @desc    Create a new client
  * @access  Public
  */
-router.post('/createClient', createClient);
+router.post('/register', createClient);
 
 /**
  * @route   GET /api/v1/clients
@@ -38,5 +38,7 @@ router.put('/:id', upload.single('clientPhoto'), updateClient);
  * @access  Public
  */
 router.delete('/:id', deleteClient);
+
+
 
 export default router; 
