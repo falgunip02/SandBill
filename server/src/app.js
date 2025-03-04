@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import userRouter from './routes/user.routes.js';
 import clientRouter from './routes/client.routes.js';
+import billRouter from './routes/bill.routes.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/clients", clientRouter);
+app.use('/api/v1/bill', billRouter);
 
 app.use('/uploads', express.static('public/uploads'));
 

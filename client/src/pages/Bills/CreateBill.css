@@ -1,0 +1,21 @@
+.create-bill-form {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 24px;
+}
+
+.create-bill-form form {
+  margin-top: 24px;
+}
+
+.create-bill-form .MuiTextField-root {
+  width: 100%;
+}
+
+.create-bill-form .file-upload {
+  margin-top: 16px;
+}
+
+.create-bill-form .MuiButton-root {
+  margin-top: 8px;
+} 

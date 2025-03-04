@@ -1,62 +1,59 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
 
-const billSchema = new Schema({
+const billSchema = new mongoose.Schema({
   jobNo: {
     type: String,
-    required: true
+    required: true,
   },
   estimateDate: {
     type: Date,
-    required: true
+    required: true,
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Client',
-    required: true
+    required: true,
   },
   clientName: {
     type: String,
-    required: true
+    required: true,
   },
   narration: {
     type: String,
-    required: true
+    required: true,
   },
   estimateAmount: {
     type: Number,
-    required: true
+    required: true,
   },
   poStatus: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
-    required: true
+    required: true,
   },
   taxInvoiceDate: {
     type: Date,
-    required: true
+    required: true,
   },
   billedAmount: {
     type: Number,
-    required: true
+    required: true,
   },
   balanceBillingAmount: {
     type: Number,
-    required: true
+    required: true,
   },
   billingDate: {
     type: Date,
-    required: true
+    required: true,
   },
-  invoiceDocument: {
-    type: String,
-    required: true
-  }
+}, {
+  timestamps: true,
 });
 
 const Bill = mongoose.model('Bill', billSchema);
 
-module.exports = Bill;
+export default Bill;

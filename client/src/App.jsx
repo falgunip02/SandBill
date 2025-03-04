@@ -5,6 +5,7 @@ import LoginPage from './pages/login/Login';
 import CreateClients from './pages/CreateClients/CreateClients';
 import ViewClients from './pages/ViewClients/ViewClients';
 import ClientDetails from './pages/ViewClients/ClientDetails';
+import CreateBill from './pages/Bills/CreateBill';
 
 import { useState } from 'react';
 
@@ -38,6 +39,7 @@ function App() {
             <Route path="/viewClients" element={<ViewClients />} />
             <Route path="/viewClients/:id" element={<ClientDetails />} />
             <Route path="/clients/create" element={<CreateClients />} />
+            <Route path="/bills/create/:clientId" element={<CreateBill />} />
           
             {/* <Route path="/clients" element={<Clients />} />
             <Route path="/bills" element={<Bills />} />
