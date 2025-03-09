@@ -12,6 +12,7 @@ const Drawer = ({ isOpen, setIsOpen }) => {
     {text: 'Create Clients', path: '/createClients'},
     {text: 'View Clients', path: '/viewClients'},
     {text: 'Time Tracking', path: '/timeTracking'},
+    {text: 'View Bills', path: '/viewBill'},
     { text: 'Logout', path: '/logout' }
   ];
 
