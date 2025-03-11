@@ -68,7 +68,7 @@ const CreateBill = () => {
   const handleBillingDateChange = (date) => {
     const dueDate = new Date(date);
     dueDate.setDate(dueDate.getDate() + 30);
-    
+
     setFormData(prev => ({
       ...prev,
       billingDate: date,
@@ -91,7 +91,7 @@ const CreateBill = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/bills', payload, {
+      const response = await axios.post('http://localhost:8080/api/v1/bill/bills', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -100,7 +100,7 @@ const CreateBill = () => {
       if (response.status === 201) {
         console.log('Bill created successfully:', response.data);
         const { _id: billId } = response.data.data;
-        navigate(`/bills/${billId}`);
+        navigate(`/bill/${billId}`);
       } else {
         setError('Failed to create bill');
         console.error('Error response:', response);
