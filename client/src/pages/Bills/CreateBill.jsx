@@ -91,7 +91,7 @@ const CreateBill = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/bills', payload, {
+      const response = await axios.post('http://localhost:8080/api/v1/bill/bills', payload, {
         headers: {
           'Content-Type': 'application/json',
         },

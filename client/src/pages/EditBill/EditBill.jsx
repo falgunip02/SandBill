@@ -51,26 +51,29 @@ const EditBill = () => {
                 [name]: value,
             };
 
-            if (name === 'estimateAmount' || name === 'billedAmount') {
-                const estimate = name === 'estimateAmount' ? value : prev.estimateAmount;
-                const billed = name === 'billedAmount' ? value : prev.billedAmount;
-                const balance = calculateBalance(estimate, billed);
-                
-                updatedBill.balanceBillingAmount = balance;
-                
-                // Update status based on balance
-                if (balance === 0) {
-                    updatedBill.paymentStatus = 'Paid';
-                    updatedBill.status = 'Paid';
-                } else if (Number(billed) > 0) {
-                    updatedBill.paymentStatus = 'Partially Paid';
-                    updatedBill.status = 'Partially Paid';
-                } else {
-                    updatedBill.paymentStatus = 'Unpaid';
-                    updatedBill.status = 'Unpaid';
-                }
-            }
 
+
+            // In your handleChange function
+if (name === 'estimateAmount' || name === 'billedAmount') {
+    // ... existing balance calculation ...
+    const estimate = name === 'estimateAmount' ? value : prev.estimateAmount;
+    const billed = name === 'billedAmount' ? value : prev.billedAmount;
+    const balance = calculateBalance(estimate, billed);
+    
+    updatedBill.balanceBillingAmount = balance;
+  
+    // Update payment status based on backend enum
+    if (balance === 0) {
+      updatedBill.paymentStatus = 'Completed';
+      updatedBill.status = 'Paid';
+    } else if (Number(billed) > 0) {
+      updatedBill.paymentStatus = 'In Progress';
+      updatedBill.status = 'Partially Paid';
+    } else {
+      updatedBill.paymentStatus = 'Not Started';
+      updatedBill.status = 'Unpaid';
+    }
+  }
             return updatedBill;
         });
     };
@@ -95,7 +98,9 @@ const EditBill = () => {
                 estimateAmount,
                 billedAmount,
                 balanceBillingAmount: balance,
-                paymentStatus: balance === 0 ? 'Paid' : (billedAmount > 0 ? 'Partially Paid' : 'Unpaid'),
+
+                // Replace the paymentStatus line in formattedBill with:
+paymentStatus: balance === 0 ? 'Completed' : (billedAmount > 0 ? 'In Progress' : 'Not Started'),
                 status: balance === 0 ? 'Paid' : (billedAmount > 0 ? 'Partially Paid' : 'Unpaid'),
                 estimateDate: bill.estimateDate ? new Date(bill.estimateDate).toISOString() : null,
                 taxInvoiceDate: bill.taxInvoiceDate ? new Date(bill.taxInvoiceDate).toISOString() : null,
@@ -238,18 +243,18 @@ const EditBill = () => {
     margin="normal"
     disabled
 />
+{/* / In your TextField for Payment Status */}
 <TextField
-    label="Payment Status"
-    name="paymentStatus"
-    value={bill.paymentStatus}
-    InputProps={{
-        readOnly: true,
-    }}
-    fullWidth
-    margin="normal"
-    disabled
+  label="Payment Status"
+  name="paymentStatus"
+  value={bill.paymentStatus}
+  InputProps={{ readOnly: true }}
+  fullWidth
+  margin="normal"
+  disabled
 />
-                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+
+               <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                     <Button 
                         type="submit" 
                         variant="contained" 

@@ -31,11 +31,11 @@ const billSchema = new mongoose.Schema({
     enum: ['Pending', 'Approved', 'Rejected'],
     required: true,
   },
-  status: {
-    type: String,
-    enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
-    required: true,
-  },
+  // status: {
+  //   type: String,
+  //   enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
+  //   required: true,
+  // },
   
   taxInvoiceDate: {
     type: Date,
@@ -57,11 +57,17 @@ const billSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  paymentStatus: {
-    type: String,
-    enum: ['Not Started', 'In Progress', 'Completed'],
-    default: 'Not Started',
-  },
+  // In Bill schema
+paymentStatus: {
+  type: String,
+  enum: ['Not Started', 'In Progress', 'Completed'],
+  default: 'Not Started',
+},
+status: {
+  type: String,
+  enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
+  required: true,
+},
   daysOverdue: {
     type: Number,
     default: 0,
