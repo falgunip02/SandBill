@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const billSchema = new mongoose.Schema({
 
 
-  
+
   jobNo: {
     type: String,
     required: true,
@@ -39,7 +39,7 @@ const billSchema = new mongoose.Schema({
   //   enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
   //   required: true,
   // },
-  
+
   taxInvoiceDate: {
     type: Date,
     required: true,
@@ -61,16 +61,16 @@ const billSchema = new mongoose.Schema({
     required: true,
   },
   // In Bill schema
-paymentStatus: {
-  type: String,
-  enum: ['Not Started', 'In Progress', 'Completed'],
-  default: 'Not Started',
-},
-status: {
-  type: String,
-  enum: ['Unpaid','Open', 'Partially Paid', 'Paid', 'Overdue'],
-  required: true,
-},
+  paymentStatus: {
+    type: String,
+    enum: ['Not Started', 'In Progress', 'Completed'],
+    default: 'Not Started',
+  },
+  status: {
+    type: String,
+    enum: ['Unpaid', 'Open', 'Partially Paid', 'Paid', 'Overdue'],
+    required: true,
+  },
   daysOverdue: {
     type: Number,
     default: 0,
@@ -95,7 +95,7 @@ status: {
 });
 
 // Calculate days overdue and update status
-billSchema.pre('save', function(next) {
+billSchema.pre('save', function (next) {
   const today = new Date();
   const dueDate = new Date(this.dueDate);
 
@@ -103,7 +103,7 @@ billSchema.pre('save', function(next) {
   if (today > dueDate && this.status !== 'Paid') {
     const diffTime = Math.abs(today - dueDate);
     this.daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     // Update status to Overdue if past due date
     if (this.status !== 'Overdue') {
       this.status = 'Overdue';
@@ -126,7 +126,7 @@ billSchema.pre('save', function(next) {
 });
 
 // Method to add payment
-billSchema.methods.addPayment = async function(amount, notes = '') {
+billSchema.methods.addPayment = async function (amount, notes = '') {
   this.paymentHistory.push({
     amount,
     date: new Date(),
@@ -140,7 +140,7 @@ billSchema.methods.addPayment = async function(amount, notes = '') {
 };
 
 // Method to schedule next reminder
-billSchema.methods.scheduleReminder = function() {
+billSchema.methods.scheduleReminder = function () {
   const today = new Date();
   const reminderTypes = ['First', 'Second', 'Final'];
   const currentReminderCount = this.remindersSent.length;

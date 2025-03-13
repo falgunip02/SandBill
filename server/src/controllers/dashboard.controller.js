@@ -2,7 +2,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import Bill from "../models/bill.model.js";
-
 const getDashboardData = asyncHandler(async (req, res) => {
     try {
         const bills = await Bill.find();
@@ -11,22 +10,18 @@ const getDashboardData = asyncHandler(async (req, res) => {
         let receivedAmount = 0;
         let currentReceivables = 0;
         let overdueReceivables = 0;
-        let totalPayables = 0;
-        let currentPayables = 0;
-        let overduePayables = 0;
 
         const now = new Date();
 
         bills.forEach(bill => {
-            // Calculate total receivables
-            totalReceivables += bill.billedAmount;
+            // Total Receivables should be based on estimateAmount
+            totalReceivables += bill.estimateAmount;
 
             // Calculate received amount from payment history
-            const totalPaid = bill.paymentHistory?.reduce((sum, payment) => 
-                sum + (payment.amount || 0), 0) || 0;
+                const totalPaid = bill.paymentHistory?.reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
             receivedAmount += totalPaid;
 
-            // Calculate pending amount
+            // Calculate pending amount (based on balanceBillingAmount)
             const pendingAmount = bill.balanceBillingAmount;
 
             // Categorize pending amounts based on due date
@@ -45,8 +40,8 @@ const getDashboardData = asyncHandler(async (req, res) => {
             if (!acc[month]) {
                 acc[month] = { receivables: 0, received: 0 };
             }
-            acc[month].receivables += bill.billedAmount;
-            acc[month].received += bill.billedAmount - bill.balanceBillingAmount;
+            acc[month].receivables += bill.estimateAmount;
+            acc[month].received += bill.estimateAmount - bill.balanceBillingAmount;
             return acc;
         }, {});
 
@@ -56,9 +51,6 @@ const getDashboardData = asyncHandler(async (req, res) => {
                 receivedAmount,
                 currentReceivables,
                 overdueReceivables,
-                totalPayables,
-                currentPayables,
-                overduePayables,
                 monthlyData: Object.entries(monthlyData).map(([month, data]) => ({
                     month,
                     ...data
@@ -69,5 +61,6 @@ const getDashboardData = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Error fetching dashboard data: " + error.message);
     }
 });
+
 
 export { getDashboardData };

@@ -15,23 +15,23 @@ const OverView = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/v1/dashboard');
-            const { data } = response.data;
-            
-            setTotalReceivables(data.totalReceivables);
-            setCurrentReceivables(data.currentReceivables);
-            setOverdueReceivables(data.overdueReceivables);
-            setTotalPayables(data.totalPayables);
-            setCurrentPayables(data.currentPayables);
-            setOverduePayables(data.overduePayables);
-        } catch (error) {
-            console.error('Error fetching dashboard data:', error);
-        }
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/dashboard');
+        const { data } = response.data;
+
+        setTotalReceivables(data.totalReceivables);
+        setCurrentReceivables(data.currentReceivables);
+        setOverdueReceivables(data.overdueReceivables);
+        setTotalPayables(data.totalPayables);
+        setCurrentPayables(data.currentPayables);
+        setOverduePayables(data.overduePayables);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
     };
 
     fetchDashboardData();
-}, []);
+  }, []);
 
   return (
     <div className="layout">
@@ -49,8 +49,14 @@ const OverView = () => {
             <div className="amount-display">
               <h2>₹{totalReceivables.toLocaleString()}</h2>
               <div className="progress-bar">
-                <div className="progress" style={{ width: `${(currentReceivables / totalReceivables) * 100}%` }}></div>
-                <div className="progress-secondary" style={{ width: `${(overdueReceivables / totalReceivables) * 100}%` }}></div>
+                <div className="progress"
+                  style={{ width: `${Math.max(0, Math.min(100, totalReceivables ? (currentReceivables / totalReceivables) * 100 : 0))}%` }}>
+                </div>
+
+                <div className="progress-secondary"
+                  style={{ width: `${Math.max(0, Math.min(100, totalReceivables ? (overdueReceivables / totalReceivables) * 100 : 0))}%` }}>
+                </div>
+
               </div>
               <div className="amount-details">
                 <span>Current: ₹{currentReceivables.toLocaleString()}</span>
