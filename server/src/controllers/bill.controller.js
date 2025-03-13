@@ -33,8 +33,8 @@ const createBill = asyncHandler(async (req, res) => {
     !taxInvoiceDate ||
     !billedAmount ||
     !balanceBillingAmount ||
-    !billingDate 
-    
+    !billingDate ||
+    !dueDate // Add this line
   ) {
     throw new ApiError(400, "All fields are required.");
   }
@@ -115,7 +115,7 @@ const getAllBills = async (req, res) => {
 };
 
 // Add Payment to a Bill
- const addPayment = async (req, res) => {
+const addPayment = async (req, res) => {
   try {
     const { billId } = req.params;
     const { amount, notes } = req.body;
@@ -179,5 +179,118 @@ const updateBill = asyncHandler(async (req, res) => {
 
   res.status(200).json(new ApiResponse(200, updatedBill, 'Bill updated successfully'));
 });
+
+// // Controller: Get Overview Data
+// const getOverviewData = asyncHandler(async (req, res) => {
+//   try {
+//     const bills = await Bill.find();
+
+// //     let totalReceivables = 0;
+//     let currentReceivables = 0;
+//     let overdueReceivables = 0;
+//     let totalPayables = 0;
+//     let currentPayables = 0;
+//     let overduePayables = 0;
+
+//     bills.forEach(bill => {
+//       if (bill.status === 'Paid') {
+//         totalReceivables += bill.billedAmount;
+//       } else {
+//         totalReceivables += bill.billedAmount;
+//         if (new Date(bill.dueDate) < new Date()) {
+//           overdueReceivables += bill.balanceBillingAmount;
+//         } else {
+//           currentReceivables += bill.balanceBillingAmount;
+//         }
+//       }
+
+//       // Assuming you have a similar structure for payables
+//       // totalPayables += bill.payableAmount;
+//       // if (new Date(bill.dueDate) < new Date()) {
+//       //   overduePayables += bill.balancePayableAmount;
+//       // } else {
+//       //   currentPayables += bill.balancePayableAmount;
+//       // }
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       data: {
+//         totalReceivables,
+//         currentReceivables,
+//         overdueReceivables,
+//         totalPayables,
+//         currentPayables,
+//         overduePayables
+//       }
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Server Error',
+//       error: error.message
+//     });
+//   }
+// });
+
+
+// // In bill.controller.js
+// const getDashboardData = asyncHandler(async (req, res) => {
+//   try {
+//     // Your dashboard logic here
+//     const bills = await Bill.find();
+
+
+
+//     let totalReceivables = 0;
+//     let currentReceivables = 0;
+//     let overdueReceivables = 0;
+//     let totalPayables = 0;
+//     let currentPayables = 0;
+//     let overduePayables = 0;
+
+//     bills.forEach(bill => {
+//       if (bill.status === 'Paid') {
+//         totalReceivables += bill.billedAmount;
+//       } else {
+//         totalReceivables += bill.billedAmount;
+//         if (new Date(bill.dueDate) < new Date()) {
+//           overdueReceivables += bill.balanceBillingAmount;
+//         } else {
+//           currentReceivables += bill.balanceBillingAmount;
+//         }
+//       }
+
+//       // Assuming you have a similar structure for payables
+//       // totalPayables += bill.payableAmount;
+//       // if (new Date(bill.dueDate) < new Date()) {
+//       //   overduePayables += bill.balancePayableAmount;
+//       // } else {
+//       //   currentPayables += bill.balancePayableAmount;
+//       // }
+//     });
+
+      
+//     // Calculate metrics...
+    
+//     res.status(200).json({
+//       success: true,
+//       data: {
+//         totalReceivables,
+//         currentReceivables,
+//         overdueReceivables,
+//         totalPayables,
+//         currentPayables,
+//         overduePayables
+//       }
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Server Error',
+//       error: error.message
+//     });
+//   }
+// });
 
 export { createBill, getBillDetails, addPayment, getAllBills, updateBill };

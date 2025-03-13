@@ -65,7 +65,7 @@ paymentStatus: {
 },
 status: {
   type: String,
-  enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
+  enum: ['Unpaid','Open', 'Partially Paid', 'Paid', 'Overdue'],
   required: true,
 },
   daysOverdue: {
@@ -110,6 +110,7 @@ billSchema.pre('save', function(next) {
   // Update payment status based on amounts
   if (this.billedAmount === 0) {
     this.paymentStatus = 'Not Started';
+    this.status = 'Unpaid'; // Changed from lowercase to uppercase
   } else if (this.balanceBillingAmount > 0) {
     this.paymentStatus = 'In Progress';
     this.status = 'Partially Paid';

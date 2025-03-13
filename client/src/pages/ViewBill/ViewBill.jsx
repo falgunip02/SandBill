@@ -8,6 +8,7 @@ const ViewBill = () => {
     const [bills, setBills] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');  // Add this line
 
     const fetchBills = async () => {
         try {
@@ -37,12 +38,29 @@ const ViewBill = () => {
         }
     };
 
+    // Add this function to filter bills
+    const filteredBills = bills.filter(bill => 
+        bill.jobNo.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (loading) return <div>Loading bills...</div>;
     if (error) return <div>Error fetching bills: {error}</div>;
 
     return (
         <div className="bill-details">
             <h2>View Bills</h2>
+            
+            {/* Add search bar */}
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by Job No..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                />
+            </div>
+
             <table className="bill-info">
                 <thead>
                     <tr>
@@ -57,7 +75,7 @@ const ViewBill = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {bills.map((bill) => (
+                    {filteredBills.map((bill) => (
                         <tr key={bill._id}>
                             <td>{bill.jobNo}</td>
                             <td>{bill.clientName}</td>
@@ -75,7 +93,7 @@ const ViewBill = () => {
                                     className="action-button view-button"
                                     onClick={() => handleViewDetails(bill._id)}
                                 >
-                                    View Details
+                                    Details
                                 </button>
                                 <button 
                                     className="action-button delete-button"
