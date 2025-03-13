@@ -59,7 +59,7 @@ const OverView = () => {
             </div>
           </div>
 
-          {/* Total Payables Card */}
+          {/* Total Payables Card
           <div className="dashboard-tile">
             <h3>TOTAL PAYABLES</h3>
             <div className="amount-display">
@@ -73,7 +73,7 @@ const OverView = () => {
                 <span>Overdue: ₹{overduePayables.toLocaleString()}</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Cash Flow Graph */}
           <div className="dashboard-tile large">
@@ -103,3 +103,7 @@ const OverView = () => {
 };
 
 export default OverView;
+
+
+
+

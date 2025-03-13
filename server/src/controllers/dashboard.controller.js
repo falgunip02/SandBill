@@ -7,59 +7,62 @@ const getDashboardData = asyncHandler(async (req, res) => {
     try {
         const bills = await Bill.find();
 
-        let totalReceivables = 0;  // Total amount that should be received
-        let receivedAmount = 0;    // Amount actually received
-        let currentReceivables = 0; // Amount pending but within due date
-        let overdueReceivables = 0; // Amount pending and overdue
-
-        let totalPayables = 0;     // Total amount to be paid
-        let currentPayables = 0;   // Amount to be paid within due date
-        let overduePayables = 0;   // Amount overdue for payment
+        let totalReceivables = 0;
+        let receivedAmount = 0;
+        let currentReceivables = 0;
+        let overdueReceivables = 0;
+        let totalPayables = 0;
+        let currentPayables = 0;
+        let overduePayables = 0;
 
         const now = new Date();
 
         bills.forEach(bill => {
-            // Receivables Calculation
-            if (bill.type === 'Receivable') {
-                totalReceivables += bill.billedAmount;
-                receivedAmount += bill.paidAmount || 0; // Track received amount
+            // Calculate total receivables
+            totalReceivables += bill.billedAmount;
 
-                const pendingAmount = bill.billedAmount - (bill.paidAmount || 0);
+            // Calculate received amount from payment history
+            const totalPaid = bill.paymentHistory?.reduce((sum, payment) => 
+                sum + (payment.amount || 0), 0) || 0;
+            receivedAmount += totalPaid;
 
-                if (pendingAmount > 0) {
-                    if (new Date(bill.dueDate) < now) {
-                        overdueReceivables += pendingAmount;
-                    } else {
-                        currentReceivables += pendingAmount;
-                    }
-                }
-            }
+            // Calculate pending amount
+            const pendingAmount = bill.balanceBillingAmount;
 
-            // Payables Calculation
-            if (bill.type === 'Payable') {
-                totalPayables += bill.billedAmount;
-                
-                const pendingPayable = bill.billedAmount - (bill.paidAmount || 0);
-
-                if (pendingPayable > 0) {
-                    if (new Date(bill.dueDate) < now) {
-                        overduePayables += pendingPayable;
-                    } else {
-                        currentPayables += pendingPayable;
-                    }
+            // Categorize pending amounts based on due date
+            if (pendingAmount > 0) {
+                if (new Date(bill.dueDate) < now) {
+                    overdueReceivables += pendingAmount;
+                } else {
+                    currentReceivables += pendingAmount;
                 }
             }
         });
 
+        // Prepare monthly data for charts
+        const monthlyData = bills.reduce((acc, bill) => {
+            const month = new Date(bill.billingDate).toLocaleString('default', { month: 'short' });
+            if (!acc[month]) {
+                acc[month] = { receivables: 0, received: 0 };
+            }
+            acc[month].receivables += bill.billedAmount;
+            acc[month].received += bill.billedAmount - bill.balanceBillingAmount;
+            return acc;
+        }, {});
+
         return res.status(200).json(
             new ApiResponse(200, {
                 totalReceivables,
-                receivedAmount,  // How much is actually received
+                receivedAmount,
                 currentReceivables,
                 overdueReceivables,
                 totalPayables,
                 currentPayables,
-                overduePayables
+                overduePayables,
+                monthlyData: Object.entries(monthlyData).map(([month, data]) => ({
+                    month,
+                    ...data
+                }))
             }, "Dashboard data retrieved successfully")
         );
     } catch (error) {

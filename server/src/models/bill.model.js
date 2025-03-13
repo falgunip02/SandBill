@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
 const billSchema = new mongoose.Schema({
+
+
+  
   jobNo: {
     type: String,
     required: true,
