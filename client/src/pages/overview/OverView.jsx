@@ -9,9 +9,9 @@ const OverView = () => {
   const [totalReceivables, setTotalReceivables] = useState(0);
   const [currentReceivables, setCurrentReceivables] = useState(0);
   const [overdueReceivables, setOverdueReceivables] = useState(0);
-  const [totalPayables, setTotalPayables] = useState(0);
-  const [currentPayables, setCurrentPayables] = useState(0);
-  const [overduePayables, setOverduePayables] = useState(0);
+  // const [totalPayables, setTotalPayables] = useState(0);
+  // const [currentPayables, setCurrentPayables] = useState(0);
+  // const [overduePayables, setOverduePayables] = useState(0);
 
   useEffect(() => {
     const fetchDashboardData = async () => {

@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 
 const billSchema = new mongoose.Schema({
-
-
-
   jobNo: {
     type: String,
     required: true,
@@ -32,25 +29,17 @@ const billSchema = new mongoose.Schema({
   poStatus: {
     type: String,
     enum: ['Pending', 'Approved', 'Rejected'],
-    required: true,
   },
-  // status: {
-  //   type: String,
-  //   enum: ['Open', 'Partially Paid', 'Paid', 'Overdue'],
-  //   required: true,
-  // },
-
-  taxInvoiceDate: {
-    type: Date,
-    required: true,
-  },
+  taxInvoiceDate: Date,
   billedAmount: {
     type: Number,
     required: true,
+    default: 0,  // Add default value
   },
   balanceBillingAmount: {
     type: Number,
     required: true,
+    default: function() { return this.estimateAmount; } // Set default to estimateAmount
   },
   billingDate: {
     type: Date,
@@ -60,7 +49,6 @@ const billSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  // In Bill schema
   paymentStatus: {
     type: String,
     enum: ['Not Started', 'In Progress', 'Completed'],
@@ -69,61 +57,92 @@ const billSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['Unpaid', 'Open', 'Partially Paid', 'Paid', 'Overdue'],
-    required: true,
+    default: 'Unpaid',  // Add default value
   },
   daysOverdue: {
     type: Number,
     default: 0,
   },
-  paymentHistory: [
-    {
-      amount: Number,
-      date: Date,
-      notes: String,
-    },
-  ],
-  remindersSent: [
-    {
-      date: Date,
-      type: String, // 'First', 'Second', 'Final'
-    },
-  ],
+  paymentHistory: [{
+    amount: Number,
+    date: Date,
+    notes: String,
+  }],
+  remindersSent: [{
+    date: Date,
+    type: String,
+  }],
   lastReminderDate: Date,
   nextReminderDate: Date,
 }, {
   timestamps: true,
 });
 
-// Calculate days overdue and update status
+// Updated pre-save hook
 billSchema.pre('save', function (next) {
   const today = new Date();
   const dueDate = new Date(this.dueDate);
 
-  // Calculate days overdue
-  if (today > dueDate && this.status !== 'Paid') {
-    const diffTime = Math.abs(today - dueDate);
-    this.daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Check for tax invoice instead of poDate
+  if (!this.poStatus || !this.taxInvoiceDate) {
+    this.paymentStatus = 'Not Started';
+    this.status = 'Unpaid';
+  } else {
+    // Only calculate payment status if PO details exist
+    if (this.billedAmount === 0) {
+      this.paymentStatus = 'Not Started';
+      this.status = 'Unpaid';
+    } else if (this.balanceBillingAmount > 0) {
+      this.paymentStatus = 'In Progress';
+      this.status = 'Partially Paid';
+    } else if (this.balanceBillingAmount === 0) {
+      this.paymentStatus = 'Completed';
+      this.status = 'Paid';
+    }
+  }
 
-    // Update status to Overdue if past due date
+  // Calculate overdue regardless of PO status
+  if (today > dueDate && this.status !== 'Paid') {
+    const diffTime = today - dueDate;
+    this.daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (this.status !== 'Overdue') {
       this.status = 'Overdue';
     }
   }
 
-  // Update payment status based on amounts
-  if (this.billedAmount === 0) {
-    this.paymentStatus = 'Not Started';
-    this.status = 'Unpaid'; // Changed from lowercase to uppercase
-  } else if (this.balanceBillingAmount > 0) {
-    this.paymentStatus = 'In Progress';
-    this.status = 'Partially Paid';
-  } else if (this.balanceBillingAmount === 0) {
-    this.paymentStatus = 'Completed';
-    this.status = 'Paid';
-  }
+  // Ensure minimum values
+  this.billedAmount = Math.max(this.billedAmount, 0);
+  this.balanceBillingAmount = Math.max(this.estimateAmount - this.billedAmount, 0);
 
   next();
 });
+
+
+
+//   // Existing logic for overdue calculation
+//   if (today > dueDate && this.status !== 'Paid') {
+//     const diffTime = Math.abs(today - dueDate);
+//     this.daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+//     if (this.status !== 'Overdue') {
+//       this.status = 'Overdue';
+//     }
+//   }
+
+//   // Existing payment status logic
+//   if (this.billedAmount === 0) {
+//     this.paymentStatus = 'Not Started';
+//     this.status = 'Unpaid';
+//   } else if (this.balanceBillingAmount > 0) {
+//     this.paymentStatus = 'In Progress';
+//     this.status = 'Partially Paid';
+//   } else if (this.balanceBillingAmount === 0) {
+//     this.paymentStatus = 'Completed';
+//     this.status = 'Paid';
+//   }
+
+//   next();
+// });
+
 
 // Method to add payment
 billSchema.methods.addPayment = async function (amount, notes = '') {

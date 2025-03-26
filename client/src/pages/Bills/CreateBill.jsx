@@ -15,12 +15,13 @@ const CreateBill = () => {
     client: '',
     clientName: '',
     narration: '',
-    estimateAmount: '',
+    estimateAmount: 0,
+    // poStatus: '',
     poStatus: '',
     status: '',
-    taxInvoiceDate: new Date().toISOString().split('T')[0],
-    billedAmount: '',
-    balanceBillingAmount: '',
+    taxInvoiceDate: null, // Changed to null new : Date().toISOString().split('T')[0],
+    billedAmount: 0,
+    balanceBillingAmount: 0,
     billingDate: new Date(),
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     paymentStatus: 'Not Started',
@@ -31,6 +32,7 @@ const CreateBill = () => {
   const [clients, setClients] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
 
   // Fetch clients for dropdown
   useEffect(() => {
@@ -45,12 +47,23 @@ const CreateBill = () => {
     fetchClients();
   }, []);
 
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
+    setFormData(prev => ({
+      ...prev,
+      [name]: name.includes('Amount') ? Number(value) : value
     }));
+  
+
+
+
 
     // Auto-fill balanceBillingAmount based on estimateAmount and billedAmount
     if (name === 'estimateAmount' || name === 'billedAmount') {
@@ -80,6 +93,10 @@ const CreateBill = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+
+
+    
 
     // Convert dates to ISO strings
     const payload = {
@@ -187,27 +204,50 @@ const CreateBill = () => {
               required
             />
             <TextField
-              select
-              fullWidth
-              label="PO Status"
-              name="poStatus"
-              value={formData.poStatus}
-              onChange={handleChange}
-              required
-            >
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Approved">Approved</MenuItem>
-              <MenuItem value="Rejected">Rejected</MenuItem>
-            </TextField>
+  select
+  fullWidth
+  label="PO Status"
+  name="poStatus"
+  value={formData.poStatus}
+  onChange={handleChange}
+>
+  <MenuItem value="">None</MenuItem>
+  <MenuItem value="Pending">Pending</MenuItem>
+  <MenuItem value="Approved">Approved</MenuItem>
+  <MenuItem value="Rejected">Rejected</MenuItem>
+</TextField>
+
+            
             <TextField
-              fullWidth
-              label="Status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              required
-            />
-            {/* Tax Invoice Date */}
+                select
+                fullWidth
+                label="Status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required
+              >
+                <MenuItem value="Unpaid">Unpaid</MenuItem>
+                <MenuItem value="Open">Open</MenuItem>
+                <MenuItem value="Partially Paid">Partially Paid</MenuItem>
+                <MenuItem value="Paid">Paid</MenuItem>
+                <MenuItem value="Overdue">Overdue</MenuItem>
+            </TextField>
+
+
+
+            <DatePicker
+  label="Tax Invoice Date"
+  value={formData.taxInvoiceDate}
+  onChange={(newValue) => {
+    if (newValue && newValue > new Date(2000, 0, 1)) {
+      setFormData(prev => ({ ...prev, taxInvoiceDate: newValue }));
+    }
+  }}
+  minDate={new Date(2000, 0, 1)}
+  renderInput={(params) => <TextField {...params} />}
+/>
+            {/* Tax Invoice Date
             <TextField
               fullWidth
               type="date"
@@ -217,7 +257,7 @@ const CreateBill = () => {
               onChange={handleChange}
               required
               InputLabelProps={{ shrink: true }}
-            />
+            /> */}
             <TextField
               fullWidth
               type="number"

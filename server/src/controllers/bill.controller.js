@@ -21,6 +21,9 @@ const createBill = asyncHandler(async (req, res) => {
     dueDate // Add this line
   } = req.body;
 
+console.log(req.body);
+
+
   if (
     !jobNo ||
     !estimateDate ||
@@ -28,9 +31,7 @@ const createBill = asyncHandler(async (req, res) => {
     !clientName ||
     !narration ||
     !estimateAmount ||
-    !poStatus ||
     !status ||
-    !taxInvoiceDate ||
     !billedAmount ||
     !balanceBillingAmount ||
     !billingDate ||
@@ -38,6 +39,9 @@ const createBill = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(400, "All fields are required.");
   }
+  poStatus = poStatus ?? '';
+  taxInvoiceDate = taxInvoiceDate ?? new Date();
+
 
   const bill = new Bill({
     jobNo,

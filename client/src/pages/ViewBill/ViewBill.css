@@ -1,8 +1,8 @@
 /* Variables for enhanced color palette */
 :root {
-  --primary-color: #8B5CF6;
-  --primary-hover: #7C3AED;
-  --secondary-color: #7E69AB;
+  --primary-color: #bba9e6;
+  --primary-hover: #1dc1de;
+  --secondary-color: #29b1d7;
   --background-color: #FFFFFF;
   --text-color: #333333;
   --light-gray: #F3F4F6;
@@ -33,7 +33,7 @@
 }
 
 .bill-details h2 {
-  color: var(--primary-color);
+  color: var(--secondary-color);
   font-size: 2.2rem;
   margin-bottom: 1.5rem;
   border-bottom: 2px solid var(--light-gray);

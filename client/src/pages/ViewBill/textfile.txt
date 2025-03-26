@@ -1,0 +1,6 @@
+
+last week
+date to date
+
+tax invoice date / billing date optional 
+cz it can be updated after any time 

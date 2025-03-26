@@ -7,13 +7,13 @@ const Drawer = ({ isOpen, setIsOpen }) => {
 
   const menuItems = [
     { text: 'Dashboard', path: '/dashboard' },
-    { text: 'Profile', path: '/profile' },
-    { text: 'Settings', path: '/settings' },
+    // { text: 'Profile', path: '/profile' },
+    // { text: 'Settings', path: '/settings' },
     {text: 'Create Clients', path: '/createClients'},
     {text: 'View Clients', path: '/viewClients'},
-    {text: 'Time Tracking', path: '/timeTracking'},
+    // {text: 'Time Tracking', path: '/timeTracking'},
     {text: 'View Bills', path: '/viewBill'},
-    { text: 'Logout', path: '/logout' }
+    // { text: 'Logout', path: '/logout' }
   ];
 
   return (
