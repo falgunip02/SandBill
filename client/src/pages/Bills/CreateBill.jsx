@@ -16,7 +16,6 @@ const CreateBill = () => {
     clientName: '',
     narration: '',
     estimateAmount: 0,
-    // poStatus: '',
     poStatus: '',
     status: '',
     taxInvoiceDate: null, // Changed to null new : Date().toISOString().split('T')[0],
@@ -32,7 +31,7 @@ const CreateBill = () => {
   const [clients, setClients] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
 
   // Fetch clients for dropdown
   useEffect(() => {
@@ -60,7 +59,7 @@ const CreateBill = () => {
       ...prev,
       [name]: name.includes('Amount') ? Number(value) : value
     }));
-  
+
 
 
 
@@ -96,7 +95,7 @@ const CreateBill = () => {
 
 
 
-    
+
 
     // Convert dates to ISO strings
     const payload = {
@@ -204,49 +203,49 @@ const CreateBill = () => {
               required
             />
             <TextField
-  select
-  fullWidth
-  label="PO Status"
-  name="poStatus"
-  value={formData.poStatus}
-  onChange={handleChange}
->
-  <MenuItem value="">None</MenuItem>
-  <MenuItem value="Pending">Pending</MenuItem>
-  <MenuItem value="Approved">Approved</MenuItem>
-  <MenuItem value="Rejected">Rejected</MenuItem>
-</TextField>
+              select
+              fullWidth
+              label="PO Status"
+              name="poStatus"
+              value={formData.poStatus}
+              onChange={handleChange}
+            >
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Approved">Approved</MenuItem>
+              <MenuItem value="Rejected">Rejected</MenuItem>
+            </TextField>
 
-            
+
             <TextField
-                select
-                fullWidth
-                label="Status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Unpaid">Unpaid</MenuItem>
-                <MenuItem value="Open">Open</MenuItem>
-                <MenuItem value="Partially Paid">Partially Paid</MenuItem>
-                <MenuItem value="Paid">Paid</MenuItem>
-                <MenuItem value="Overdue">Overdue</MenuItem>
+              select
+              fullWidth
+              label="Status"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              required
+            >
+              <MenuItem value="Unpaid">Unpaid</MenuItem>
+              <MenuItem value="Open">Open</MenuItem>
+              <MenuItem value="Partially Paid">Partially Paid</MenuItem>
+              <MenuItem value="Paid">Paid</MenuItem>
+              <MenuItem value="Overdue">Overdue</MenuItem>
             </TextField>
 
 
 
             <DatePicker
-  label="Tax Invoice Date"
-  value={formData.taxInvoiceDate}
-  onChange={(newValue) => {
-    if (newValue && newValue > new Date(2000, 0, 1)) {
-      setFormData(prev => ({ ...prev, taxInvoiceDate: newValue }));
-    }
-  }}
-  minDate={new Date(2000, 0, 1)}
-  renderInput={(params) => <TextField {...params} />}
-/>
+              label="Tax Invoice Date"
+              value={formData.taxInvoiceDate}
+              onChange={(newValue) => {
+                if (newValue && newValue > new Date(2000, 0, 1)) {
+                  setFormData(prev => ({ ...prev, taxInvoiceDate: newValue }));
+                }
+              }}
+              minDate={new Date(2000, 0, 1)}
+              renderInput={(params) => <TextField {...params} />}
+            />
             {/* Tax Invoice Date
             <TextField
               fullWidth

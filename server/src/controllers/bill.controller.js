@@ -5,7 +5,7 @@ import Bill from "../models/bill.model.js";
 
 // Controller: Create New Bill
 const createBill = asyncHandler(async (req, res) => {
-  const {
+  let {
     jobNo,
     estimateDate,
     client,
@@ -18,30 +18,33 @@ const createBill = asyncHandler(async (req, res) => {
     billedAmount,
     balanceBillingAmount,
     billingDate,
-    dueDate // Add this line
+    dueDate
   } = req.body;
 
-console.log(req.body);
+  console.log(req.body);
 
-
+  // Fix the required check in createBill controller
   if (
     !jobNo ||
     !estimateDate ||
     !client ||
     !clientName ||
     !narration ||
-    !estimateAmount ||
-    !status ||
-    !billedAmount ||
-    !balanceBillingAmount ||
+    estimateAmount === undefined || // Check for undefined
+    status === undefined ||         // instead of falsy
+    billedAmount === undefined ||
+    balanceBillingAmount === undefined ||
     !billingDate ||
-    !dueDate // Add this line
+    !dueDate
   ) {
     throw new ApiError(400, "All fields are required.");
   }
-  poStatus = poStatus ?? '';
-  taxInvoiceDate = taxInvoiceDate ?? new Date();
+  // Validate poStatus
+  const validPoStatus = ['Pending', 'Approved', 'Rejected'];
+  poStatus = validPoStatus.includes(poStatus) ? poStatus : 'Pending';
 
+  // Convert taxInvoiceDate to Date object or default to today
+  taxInvoiceDate = taxInvoiceDate ? new Date(taxInvoiceDate) : new Date();
 
   const bill = new Bill({
     jobNo,
@@ -56,12 +59,13 @@ console.log(req.body);
     billedAmount,
     balanceBillingAmount,
     billingDate,
-    dueDate // Add this line
+    dueDate
   });
 
   const createdBill = await bill.save();
   res.status(201).json(new ApiResponse(201, createdBill, "Bill created successfully"));
 });
+
 
 // Controller: Get Bill Details
 const getBillDetails = asyncHandler(async (req, res) => {
@@ -157,8 +161,8 @@ const updateBill = asyncHandler(async (req, res) => {
   ];
 
   // Check for missing or empty fields
-  const missingFields = requiredFields.filter(field => 
-    !(field in updateData) || 
+  const missingFields = requiredFields.filter(field =>
+    !(field in updateData) ||
     (typeof updateData[field] === 'string' && updateData[field].trim() === '')
   );
 
@@ -170,7 +174,7 @@ const updateBill = asyncHandler(async (req, res) => {
   const updatedBill = await Bill.findByIdAndUpdate(
     billId,
     updateData,
-    { 
+    {
       new: true,
       runValidators: true, // Enable schema validation
       context: 'query' // Required for some validators like `trim`
@@ -274,9 +278,9 @@ const updateBill = asyncHandler(async (req, res) => {
 //       // }
 //     });
 
-      
+
 //     // Calculate metrics...
-    
+
 //     res.status(200).json({
 //       success: true,
 //       data: {
