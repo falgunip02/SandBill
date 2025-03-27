@@ -120,8 +120,8 @@ const getRecentBills = asyncHandler(async (req, res) => {
     try {
         const recentBills = await Bill.find()
             .sort({ createdAt: -1 })
-            .limit(5)
-            .select(' jobNo clientName EstimateAmount dueDate');
+            .limit(5)         
+            .select(' jobNo client estimateAmount dueDate status');
 
         return res.status(200).json(
             new ApiResponse(200, recentBills, "Recent bills retrieved successfully")

@@ -167,3 +167,49 @@
 .expense-item:last-child {
   border-bottom: none;
 }
+.recent-bills-container {
+  padding: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.recent-bills-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.recent-bills-table th,
+.recent-bills-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.recent-bills-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.status {
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.status.current {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+}
+
+.status.overdue {
+  color: #c62828;
+  background-color: #ffebee;
+}
+
+.no-bills {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}

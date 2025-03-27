@@ -19,6 +19,8 @@ const OverView = () => {
   const [totalReceivables, setTotalReceivables] = useState(0);
   const [currentReceivables, setCurrentReceivables] = useState(0);
   const [overdueReceivables, setOverdueReceivables] = useState(0);
+  const [recentBills, setRecentBills] = useState([]);
+
   const [weeklyReceivables, setWeeklyReceivables] = useState({
     total: 0,
     current: 0,
@@ -53,13 +55,16 @@ const OverView = () => {
 useEffect(() => {
   const fetchDashboardData = async () => {
     try {
-      const [dashboardResponse, weeklyResponse] = await Promise.all([
+      const [dashboardResponse, weeklyResponse, recentResponse] = await Promise.all([
         axios.get('http://localhost:8080/api/v1/dashboard'),
-        axios.get('http://localhost:8080/api/v1/dashboard/weeklyData')
+        axios.get('http://localhost:8080/api/v1/dashboard/weeklyData'),
+        axios.get('http://localhost:8080/api/v1/dashboard/recentBills')
       ]);
 
       const { data } = dashboardResponse.data;
       const weeklyData = weeklyResponse.data.data;
+      setRecentBills(recentResponse.data.data);
+    
 
       setTotalReceivables(data.totalReceivables);
       setCurrentReceivables(data.currentReceivables);
@@ -169,14 +174,54 @@ useEffect(() => {
                 <span>Overdue: ₹{weeklyReceivables.overdue.toLocaleString()}</span>
               </div>
             </div>
+          </div>          
+        </div>
+
+
+
+        {/* Recent Bills Card */}
+        <div className="dashboard-tile large">
+          <h3>RECENT BILLS</h3>
+          <div className="recent-bills-container">
+            {recentBills.length > 0 ? (
+              <table className="recent-bills-table">
+                <thead>
+                  <tr>
+                    <th>JobNo</th>
+                    <th>Client</th>
+                    <th>Estimate Amount.</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentBills.map((bill, index) => (
+                    <tr key={index}>
+                      <td>{bill.jobNo}</td>
+                      <td>{bill.client}</td>
+                   <td>₹{Number(bill.estimateAmount).toLocaleString()}</td>
+                      <td>{new Date(bill.dueDate).toLocaleDateString()}</td>
+                      <td className={`status ${new Date(bill.dueDate) < new Date() ? 'overdue' : 'current'}`}>
+                        {new Date(bill.dueDate) < new Date() ? 'Overdue' : 'Current'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="no-bills">No recent bills found</div>
+            )}
           </div>
-  
-          {/* ...rest of your dashboard content... */}
         </div>
       </div>
     </div>
   );
-}
+};
+
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
