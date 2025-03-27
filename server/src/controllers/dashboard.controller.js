@@ -114,4 +114,23 @@ const getWeeklyDashboardData = asyncHandler(async (req, res) => {
 
 
 
-export { getDashboardData , getWeeklyDashboardData};
+
+// Add to dashboard.controller.js
+const getRecentBills = asyncHandler(async (req, res) => {
+    try {
+        const recentBills = await Bill.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select(' jobNo clientName EstimateAmount dueDate');
+
+        return res.status(200).json(
+            new ApiResponse(200, recentBills, "Recent bills retrieved successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, "Error fetching recent bills: " + error.message);
+    }
+});
+
+
+
+export { getDashboardData , getWeeklyDashboardData, getRecentBills};
